@@ -21,13 +21,9 @@ public abstract class AbstractEncDec {
 
     private final static int MAX_STACK_LENGTH = 100;
 
-    protected String encrypt(String original) {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract String encrypt(String original);
 
-    protected String decrypt(String original) {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract String decrypt(String original);
 
     private boolean typeCheck(Class<?> clazz) {
         if (clazz == null) {
