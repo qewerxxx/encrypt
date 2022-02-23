@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * @author yeyu
  * @since 2022/2/23 10:17
  */
+@SuppressWarnings("all")
 public abstract class AbstractEncDec {
 
     private final static int MAX_STACK_LENGTH = 100;
