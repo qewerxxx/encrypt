@@ -6,10 +6,7 @@ import com.amateur.encrypt.constant.EncDecType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -56,7 +53,7 @@ public abstract class AbstractEncDec {
         if (obj == null || annotationClass == null) {
             return;
         }
-        if (obj instanceof List) {
+        if (obj instanceof Collection) {
             List list = (List) obj;
             for (Object item : list) {
                 recursive(item, annotationClass, set, type);
@@ -100,7 +97,7 @@ public abstract class AbstractEncDec {
                 }
                 field.set(source, after);
             }
-        } else if ((fieldObj instanceof List) || (fieldObj instanceof Map)) {
+        } else if ((fieldObj instanceof Collection) || (fieldObj instanceof Map)) {
             recursive(fieldObj, annotationClass, set, type);
         } else if (typeCheck(fieldObj.getClass())) {
             for (Field inFiled : fieldObj.getClass().getDeclaredFields()) {
