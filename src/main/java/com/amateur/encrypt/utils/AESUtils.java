@@ -30,7 +30,7 @@ public class AESUtils {
 
     static {
         if (Objects.isNull(KEY)) {
-            KEY = "jirbVMbb9zjQtqhGcv6kfkqowefq";
+            KEY = "ABCXVMbb9zjABCXGcv6kDoWEAdtfPXXX";
         }
     }
 
@@ -105,5 +105,4 @@ public class AESUtils {
         }
         return null;
     }
-
 }
