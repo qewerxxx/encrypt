@@ -19,17 +19,17 @@ import java.util.Map;
 @ToString
 public class Demo02 {
     @EncryptField
-    private String desc;
+    private String desc = "anc";
 
-    private Demo01 demo01;
+//    private Demo01 demo01 = new Demo01();
 
     private List<Demo03> list = Arrays.asList(new Demo03("a"), new Demo03("b"));
 
-    private List<List<Demo03>> llist = Arrays.asList(Arrays.asList(new Demo03("c")));
-
-    private Map<String, Demo03> map = new HashMap<String, Demo03>() {{
-        put("a", new Demo03("x"));
-    }};
-
-    private Map<String, Map<String, Demo03>> mmap = null;
+//    private List<List<Demo03>> llist = Arrays.asList(Arrays.asList(new Demo03("c")));
+//
+//    private Map<String, Demo03> map = new HashMap<String, Demo03>() {{
+//        put("a", new Demo03("x"));
+//    }};
+//
+//    private Map<String, Map<String, Demo03>> mmap = null;
 }

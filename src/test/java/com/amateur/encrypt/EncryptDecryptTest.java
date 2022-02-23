@@ -3,6 +3,9 @@ package com.amateur.encrypt;
 import com.amateur.encrypt.annotation.EncryptField;
 import com.amateur.encrypt.utils.DefaultEncDecInstance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author yeyu
  * @since 2022/2/23 11:41
@@ -10,12 +13,19 @@ import com.amateur.encrypt.utils.DefaultEncDecInstance;
 public class EncryptDecryptTest {
     public static void main(String[] args) throws Exception {
         DefaultEncDecInstance instance = new DefaultEncDecInstance();
-        Demo02 demo02 = new Demo02();
-        Demo01 demo01 = new Demo01();
-        demo01.setDemo02(demo02);
-        demo02.setDemo01(demo01);
-        demo02.setDesc("ABC");
-        instance.encryptField(demo02, EncryptField.class);
-        System.out.println(demo02);
+
+        List<Demo02> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(new Demo02());
+        }
+
+        long s = System.currentTimeMillis();
+        for (Demo02 demo02 : list) {
+            instance.encryptField(demo02, EncryptField.class);
+            System.out.println(demo02);
+        }
+        long e = System.currentTimeMillis();
+        System.out.println(e-s);
+
     }
 }

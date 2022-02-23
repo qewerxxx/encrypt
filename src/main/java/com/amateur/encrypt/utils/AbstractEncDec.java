@@ -5,8 +5,10 @@ import com.amateur.encrypt.annotation.EncryptField;
 import com.amateur.encrypt.constant.EncDecType;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -17,6 +19,8 @@ import java.util.regex.Pattern;
 public abstract class AbstractEncDec {
 
     private final static int MAX_STACK_LENGTH = 100;
+
+    private final static Map<Class<?>, SoftReference<List<Field>>> cache = new ConcurrentHashMap<>();
 
     protected abstract String encrypt(String original);
 
@@ -64,7 +68,10 @@ public abstract class AbstractEncDec {
                 recursive(value, annotationClass, set, type);
             }
         } else if (typeCheck(obj.getClass())) {
-            for (Field field : obj.getClass().getDeclaredFields()) {
+            if (findInCache(type,obj.getClass(),obj)) {
+                return;
+            }
+            for (Field field : findFileds(obj.getClass())) {
                 field.setAccessible(true);
                 doRecursive(obj, field.get(obj), field, annotationClass, 0, set, type);
             }
@@ -88,19 +95,14 @@ public abstract class AbstractEncDec {
         if (fieldObj instanceof String) {
             if (field.isAnnotationPresent(annotationClass)
                     && !regexCheck(fieldObj.toString(), field.getAnnotation(annotationClass))) {
-                String original = (String) fieldObj;
-                String after = original;
-                if (type.equals(EncDecType.ENCRYPT)) {
-                    after = encrypt(original);
-                } else if (type.equals(EncDecType.DECRYPT)) {
-                    after = decrypt(original);
-                }
-                field.set(source, after);
+                doForField(field, source, fieldObj, type);
+                putInCache(source.getClass(), field);
             }
         } else if ((fieldObj instanceof Collection) || (fieldObj instanceof Map)) {
             recursive(fieldObj, annotationClass, set, type);
         } else if (typeCheck(fieldObj.getClass())) {
-            for (Field inFiled : fieldObj.getClass().getDeclaredFields()) {
+            putInCache(fieldObj.getClass(),field);
+            for (Field inFiled : findFileds(fieldObj.getClass())) {
                 inFiled.setAccessible(true);
                 if (set.contains(fieldObj)) {
                     return;
@@ -110,6 +112,55 @@ public abstract class AbstractEncDec {
                 doRecursive(fieldObj, inFiled.get(fieldObj), inFiled, annotationClass, ++count, set, type);
             }
         }
+    }
+
+    private void doForField(Field field, Object source, Object fieldObj, EncDecType type) throws Exception {
+        String original = (String) fieldObj;
+        String after = original;
+        if (type.equals(EncDecType.ENCRYPT)) {
+            after = encrypt(original);
+        } else if (type.equals(EncDecType.DECRYPT)) {
+            after = decrypt(original);
+        }
+        field.set(source, after);
+    }
+
+    private void putInCache(Class<?> clazz, Field field) {
+        if (cache.containsKey(clazz)) {
+            cache.get(clazz).get().add(field);
+        } else {
+            List<Field> list = new ArrayList<>();
+            list.add(field);
+            SoftReference<List<Field>> value = new SoftReference<>(list);
+            cache.put(clazz, value);
+        }
+    }
+
+    private boolean findInCache(EncDecType type,Class<?> clazz,Object source) throws Exception {
+        if (cache.containsKey(clazz)) {
+            List<Field> fields = cache.get(clazz).get();
+            for (Field field : fields) {
+                if (cache.containsKey(field.getType())) {
+                    findInCache(type,field.getType(),field.get(source));
+                } else {
+                    doForField(field,source,field.get(source),type);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Field[] findFileds(Class<?> clazz) {
+        List<Field> list = new ArrayList<>();
+        do {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                list.add(field);
+            }
+        } while ((clazz = clazz.getSuperclass()) != Object.class);
+        return list.toArray(new Field[list.size()]);
     }
 
     public void decryptField(Object obj, Class<? extends Annotation> annotationClass) throws Exception {
