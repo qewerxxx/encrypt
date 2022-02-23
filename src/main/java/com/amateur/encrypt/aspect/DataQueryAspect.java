@@ -1,7 +1,7 @@
 package com.amateur.encrypt.aspect;
 
 import com.amateur.encrypt.annotation.EncryptField;
-import com.amateur.encrypt.utils.DefaultEncDecInstance;
+import com.amateur.encrypt.utils.AbstractEncDec;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 /**
  * 对请求参数加密 对敏感字段加密
  *
- * @author amateur
+ * @author yeyu
  */
 @Aspect
 @Slf4j
@@ -25,7 +25,7 @@ import javax.annotation.Resource;
 public class DataQueryAspect {
 
     @Resource
-    private DefaultEncDecInstance defaultEncDecInstance;
+    private AbstractEncDec defaultEncDecInstance;
 
     @Pointcut("@annotation(com.amateur.encrypt.annotation.DataSecurity)")
     public void encryptAspect() {

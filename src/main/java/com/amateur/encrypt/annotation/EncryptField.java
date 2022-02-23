@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * 加密字段注解
  * 标记改字段需要加密处理
  *
- * @author amateur
+ * @author yeyu
  */
 @Documented
 @Inherited

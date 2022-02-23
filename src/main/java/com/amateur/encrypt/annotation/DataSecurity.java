@@ -7,8 +7,7 @@ import java.lang.annotation.*;
  *  1. 查询参数中有字段需要加密
  *  2. 需要存储的敏感字段加密
  *  3. 加密字段解密
- *  4. 脱敏
- * @author amateur
+ * @author yeyu
  */
 @Documented
 @Inherited
