@@ -54,7 +54,7 @@ public abstract class AbstractEncDec {
             return;
         }
         if (obj instanceof Collection) {
-            List list = (List) obj;
+            Collection list = (Collection) obj;
             for (Object item : list) {
                 recursive(item, annotationClass, set, type);
             }
