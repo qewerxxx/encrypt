@@ -25,7 +25,7 @@ public class DataDecryptAspect {
     @Resource
     private AbstractEncDec defaultEncDecInstance;
 
-    @Pointcut("@annotation(com.amateur.encrypt.annotation.DataSecurity)")
+    @Pointcut("@annotation(com.amateur.encrypt.annotation.DataDecryptSecurity)")
     public void encryptAspect() {
     }
 
@@ -34,4 +34,5 @@ public class DataDecryptAspect {
         defaultEncDecInstance.decryptField(object, DecryptField.class);
         return object;
     }
+
 }

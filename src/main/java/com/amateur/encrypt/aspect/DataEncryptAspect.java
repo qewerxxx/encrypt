@@ -22,12 +22,12 @@ import javax.annotation.Resource;
 @Slf4j
 @Component
 @Order(3)
-public class DataQueryAspect {
+public class DataEncryptAspect {
 
     @Resource
     private AbstractEncDec defaultEncDecInstance;
 
-    @Pointcut("@annotation(com.amateur.encrypt.annotation.DataSecurity)")
+    @Pointcut("@annotation(com.amateur.encrypt.annotation.DataEncryptSecurity)")
     public void encryptAspect() {
     }
 

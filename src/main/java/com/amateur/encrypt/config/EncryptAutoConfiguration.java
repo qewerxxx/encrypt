@@ -1,7 +1,7 @@
 package com.amateur.encrypt.config;
 
 import com.amateur.encrypt.aspect.DataDecryptAspect;
-import com.amateur.encrypt.aspect.DataQueryAspect;
+import com.amateur.encrypt.aspect.DataEncryptAspect;
 import com.amateur.encrypt.utils.AbstractEncDec;
 import com.amateur.encrypt.utils.DefaultEncDecInstance;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -25,8 +25,8 @@ public class EncryptAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(AbstractEncDec.class)
-    public DataQueryAspect dataSaveAspect() {
-        return new DataQueryAspect();
+    public DataEncryptAspect dataSaveAspect() {
+        return new DataEncryptAspect();
     }
 
 
