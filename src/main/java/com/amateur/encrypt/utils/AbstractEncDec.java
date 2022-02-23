@@ -48,6 +48,11 @@ public abstract class AbstractEncDec {
         return false;
     }
 
+    // 处理流程: Obj -> 是否Map,List --是-->①遍历值 -->从头开始
+    //                             --否-->②遍历属性值-->是否为加了注解得String字符串--是-->加密解密
+    //                                                                       --否-->是否是Map,List--是-->①
+    //                                                                                         --否-->是否自定义类--是-->②
+    //                                                                                                         --否-->结束
     private void recursive(Object obj,
                            Class<? extends Annotation> annotationClass,
                            Set<Object> set,

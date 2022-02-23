@@ -1,7 +1,6 @@
 package com.amateur.encrypt;
 
 import com.amateur.encrypt.annotation.EncryptField;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,11 +23,13 @@ public class Demo02 {
 
     private Demo01 demo01;
 
-    private List<Demo03> list = Arrays.asList(new Demo03("a"),new Demo03("b"));
+    private List<Demo03> list = Arrays.asList(new Demo03("a"), new Demo03("b"));
 
     private List<List<Demo03>> llist = Arrays.asList(Arrays.asList(new Demo03("c")));
 
-    private Map<String,Demo03> map = new HashMap<String, Demo03>() {{
-        put("a",new Demo03("x"));
+    private Map<String, Demo03> map = new HashMap<String, Demo03>() {{
+        put("a", new Demo03("x"));
     }};
+
+    private Map<String, Map<String, Demo03>> mmap = null;
 }
