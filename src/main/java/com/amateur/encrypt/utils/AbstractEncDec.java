@@ -18,17 +18,20 @@ public abstract class AbstractEncDec {
 
     private final static int MAX_STACK_LENGTH = 100;
 
-//    private final static Map<Class<?>, SoftReference<List<Field>>> cache = new ConcurrentHashMap<>();
-
     protected abstract String encrypt(String original);
 
     protected abstract String decrypt(String original);
 
+    /**
+     * 检查该类是否是Java核心类
+     * @param clazz
+     * @return
+     */
     private boolean typeCheck(Class<?> clazz) {
         if (clazz == null) {
             return false;
         }
-        // Java 自带的类的classLoader都为null
+        // Java核心类库 其类加载器（BootstrapClassloader）为null
         return clazz.getClassLoader() != null && !clazz.isEnum();
     }
 
@@ -66,9 +69,6 @@ public abstract class AbstractEncDec {
                 recursive(value, annotationClass, set, type);
             }
         } else if (typeCheck(obj.getClass())) {
-//            if (findInCache(type,obj.getClass(),obj)) {
-//                return;
-//            }
             for (Field field : findFileds(obj.getClass())) {
                 field.setAccessible(true);
                 doRecursive(obj, field.get(obj), field, annotationClass, 0, set, type);
@@ -77,6 +77,17 @@ public abstract class AbstractEncDec {
     }
 
 
+    /**
+     * 递归非Java核心类的对象的所有属性 找到需要加密(解密)的字段
+     * @param source            源对象
+     * @param fieldObj          源对象中的属性对象
+     * @param field             属性
+     * @param annotationClass   需要处理的注解
+     * @param count             递归深度
+     * @param set               已遍历对象集合 防止循环引用
+     * @param type              加密 解密操作类型
+     * @throws Exception
+     */
     private void doRecursive(Object source,
                              Object fieldObj,
                              Field field,
@@ -94,12 +105,10 @@ public abstract class AbstractEncDec {
             if (field.isAnnotationPresent(annotationClass)
                     && !regexCheck(fieldObj.toString(), field.getAnnotation(annotationClass))) {
                 doForField(field, source, fieldObj, type);
-//                putInCache(source.getClass(), field);
             }
         } else if ((fieldObj instanceof Collection) || (fieldObj instanceof Map)) {
             recursive(fieldObj, annotationClass, set, type);
         } else if (typeCheck(fieldObj.getClass())) {
-//            putInCache(fieldObj.getClass(),field);
             for (Field inFiled : findFileds(fieldObj.getClass())) {
                 inFiled.setAccessible(true);
                 if (set.contains(fieldObj)) {
@@ -112,6 +121,14 @@ public abstract class AbstractEncDec {
         }
     }
 
+    /**
+     * 加解密
+     * @param field
+     * @param source
+     * @param fieldObj
+     * @param type
+     * @throws Exception
+     */
     private void doForField(Field field, Object source, Object fieldObj, EncDecType type) throws Exception {
         String original = (String) fieldObj;
         String after = original;
@@ -123,32 +140,11 @@ public abstract class AbstractEncDec {
         field.set(source, after);
     }
 
-//    private void putInCache(Class<?> clazz, Field field) {
-//        if (cache.containsKey(clazz)) {
-//            cache.get(clazz).get().add(field);
-//        } else {
-//            List<Field> list = new ArrayList<>();
-//            list.add(field);
-//            SoftReference<List<Field>> value = new SoftReference<>(list);
-//            cache.put(clazz, value);
-//        }
-//    }
-//
-//    private boolean findInCache(EncDecType type,Class<?> clazz,Object source) throws Exception {
-//        if (cache.containsKey(clazz)) {
-//            List<Field> fields = cache.get(clazz).get();
-//            for (Field field : fields) {
-//                if (cache.containsKey(field.getType())) {
-//                    findInCache(type,field.getType(),field.get(source));
-//                } else {
-//                    doForField(field,source,field.get(source),type);
-//                }
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
-
+    /**
+     * 找到该类的所有属性 包括父类私有属性
+     * @param clazz
+     * @return
+     */
     private Field[] findFileds(Class<?> clazz) {
         List<Field> list = new ArrayList<>();
         do {
