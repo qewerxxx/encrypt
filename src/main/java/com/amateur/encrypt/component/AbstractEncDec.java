@@ -1,8 +1,8 @@
-package com.amateur.encrypt.utils;
+package com.amateur.encrypt.component;
 
 import com.amateur.encrypt.annotation.DecryptField;
 import com.amateur.encrypt.annotation.EncryptField;
-import com.amateur.encrypt.constant.EncDecType;
+import com.amateur.encrypt.constant.BaseEnum;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -12,18 +12,18 @@ import java.util.regex.Pattern;
 /**
  * @author yeyu
  * @since 2022/2/23 10:17
+ * 对象递归加解密抽象类
  */
 @SuppressWarnings("all")
 public abstract class AbstractEncDec {
 
     private final static int MAX_STACK_LENGTH = 100;
 
-    protected abstract String encrypt(String original);
-
-    protected abstract String decrypt(String original);
+    protected abstract void doForField(Field field, Object source, Object fieldObj, BaseEnum type) throws Exception;
 
     /**
      * 检查该类是否是Java核心类
+     *
      * @param clazz
      * @return
      */
@@ -35,6 +35,12 @@ public abstract class AbstractEncDec {
         return clazz.getClassLoader() != null && !clazz.isEnum();
     }
 
+    /**
+     * 正则表达式校验 对匹配的字符串进行过滤
+     * @param str
+     * @param annotation
+     * @return
+     */
     private boolean regexCheck(String str, Annotation annotation) {
         if (annotation instanceof EncryptField) {
             String regex = ((EncryptField) annotation).regex();
@@ -54,7 +60,7 @@ public abstract class AbstractEncDec {
     private void recursive(Object obj,
                            Class<? extends Annotation> annotationClass,
                            Set<Object> set,
-                           EncDecType type) throws Exception {
+                           BaseEnum type) throws Exception {
         if (obj == null || annotationClass == null) {
             return;
         }
@@ -79,13 +85,14 @@ public abstract class AbstractEncDec {
 
     /**
      * 递归非Java核心类的对象的所有属性 找到需要加密(解密)的字段
-     * @param source            源对象
-     * @param fieldObj          源对象中的属性对象
-     * @param field             属性
-     * @param annotationClass   需要处理的注解
-     * @param count             递归深度
-     * @param set               已遍历对象集合 防止循环引用
-     * @param type              加密 解密操作类型
+     *
+     * @param source          源对象
+     * @param fieldObj        源对象中的属性对象
+     * @param field           属性
+     * @param annotationClass 需要处理的注解
+     * @param count           递归深度
+     * @param set             已遍历对象集合 防止循环引用
+     * @param type            加密 解密操作类型
      * @throws Exception
      */
     private void doRecursive(Object source,
@@ -94,7 +101,7 @@ public abstract class AbstractEncDec {
                              Class<? extends Annotation> annotationClass,
                              int count,
                              Set<Object> set,
-                             EncDecType type) throws Exception {
+                             BaseEnum type) throws Exception {
         if (fieldObj == null) {
             return;
         }
@@ -121,27 +128,10 @@ public abstract class AbstractEncDec {
         }
     }
 
-    /**
-     * 加解密
-     * @param field
-     * @param source
-     * @param fieldObj
-     * @param type
-     * @throws Exception
-     */
-    private void doForField(Field field, Object source, Object fieldObj, EncDecType type) throws Exception {
-        String original = (String) fieldObj;
-        String after = original;
-        if (type.equals(EncDecType.ENCRYPT)) {
-            after = encrypt(original);
-        } else if (type.equals(EncDecType.DECRYPT)) {
-            after = decrypt(original);
-        }
-        field.set(source, after);
-    }
 
     /**
      * 找到该类的所有属性 包括父类私有属性
+     *
      * @param clazz
      * @return
      */
@@ -157,12 +147,16 @@ public abstract class AbstractEncDec {
         return list.toArray(new Field[list.size()]);
     }
 
-    public void decryptField(Object obj, Class<? extends Annotation> annotationClass) throws Exception {
-        recursive(obj, annotationClass, new HashSet<>(), EncDecType.DECRYPT);
+    /**
+     * 实际对外提供的方法
+     * @param obj               需要加解密的对象
+     * @param annotationClass   针对哪一种注解
+     * @param type              加解密类型
+     * @throws Exception        异常
+     */
+    public void doActive(Object obj, Class<? extends Annotation> annotationClass, BaseEnum type) throws Exception {
+        recursive(obj, annotationClass, new HashSet<>(), type);
     }
 
-    public void encryptField(Object obj, Class<? extends Annotation> annotationClass) throws Exception {
-        recursive(obj, annotationClass, new HashSet<>(), EncDecType.ENCRYPT);
-    }
 
 }

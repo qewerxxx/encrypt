@@ -2,8 +2,10 @@ package com.amateur.encrypt.config;
 
 import com.amateur.encrypt.aspect.DataDecryptAspect;
 import com.amateur.encrypt.aspect.DataEncryptAspect;
-import com.amateur.encrypt.utils.AbstractEncDec;
-import com.amateur.encrypt.utils.DefaultEncDecInstance;
+import com.amateur.encrypt.component.AESUtils;
+import com.amateur.encrypt.component.AbstractEncDec;
+import com.amateur.encrypt.component.DefaultEncDecInstance;
+import com.amateur.encrypt.component.EncryptUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,12 @@ public class EncryptAutoConfiguration {
     @ConditionalOnMissingBean(AbstractEncDec.class)
     public AbstractEncDec defaultEncDecInstance() {
         return new DefaultEncDecInstance();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(EncryptUtil.class)
+    public EncryptUtil defaultEncryptUtil() {
+        return new AESUtils();
     }
 
     @Bean

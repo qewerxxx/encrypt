@@ -1,7 +1,8 @@
 package com.amateur.encrypt.aspect;
 
 import com.amateur.encrypt.annotation.DecryptField;
-import com.amateur.encrypt.utils.AbstractEncDec;
+import com.amateur.encrypt.component.AbstractEncDec;
+import com.amateur.encrypt.constant.EncDecType;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,7 +32,7 @@ public class DataDecryptAspect {
 
     @AfterReturning(pointcut = "encryptAspect()", returning = "object")
     public Object doAfterReturning(Object object) throws Exception {
-        defaultEncDecInstance.decryptField(object, DecryptField.class);
+        defaultEncDecInstance.doActive(object, DecryptField.class, EncDecType.DECRYPT);
         return object;
     }
 

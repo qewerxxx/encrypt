@@ -1,7 +1,8 @@
 package com.amateur.encrypt;
 
 import com.amateur.encrypt.annotation.EncryptField;
-import com.amateur.encrypt.utils.DefaultEncDecInstance;
+import com.amateur.encrypt.component.DefaultEncDecInstance;
+import com.amateur.encrypt.constant.EncDecType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class EncryptDecryptTest {
 
         long s = System.currentTimeMillis();
         for (Demo02 demo02 : list) {
-            instance.encryptField(demo02, EncryptField.class);
+            instance.encryptField(demo02, EncryptField.class, EncDecType.ENCRYPT);
             System.out.println(demo02);
         }
         long e = System.currentTimeMillis();
