@@ -5,5 +5,5 @@ package com.amateur.encrypt.constant;
  * @since 2022/2/23 11:21
  */
 public enum EncDecType implements BaseEnum {
-    ENCRYPT, DECRYPT
+    ENCRYPT, DECRYPT;
 }

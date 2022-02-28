@@ -3,7 +3,6 @@ package com.amateur.encrypt.component;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -14,7 +13,6 @@ import java.util.Objects;
  * 功能描述:  加密工具
  */
 @Slf4j
-@Component
 @SuppressWarnings("all")
 public class AESUtils implements EncryptUtil {
 

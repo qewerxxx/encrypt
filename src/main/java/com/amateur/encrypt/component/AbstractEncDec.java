@@ -37,6 +37,7 @@ public abstract class AbstractEncDec {
 
     /**
      * 正则表达式校验 对匹配的字符串进行过滤
+     *
      * @param str
      * @param annotation
      * @return
@@ -149,10 +150,11 @@ public abstract class AbstractEncDec {
 
     /**
      * 实际对外提供的方法
-     * @param obj               需要加解密的对象
-     * @param annotationClass   针对哪一种注解
-     * @param type              加解密类型
-     * @throws Exception        异常
+     *
+     * @param obj             需要加解密的对象
+     * @param annotationClass 针对哪一种注解
+     * @param type            加解密类型
+     * @throws Exception 异常
      */
     public void doActive(Object obj, Class<? extends Annotation> annotationClass, BaseEnum type) throws Exception {
         recursive(obj, annotationClass, new HashSet<>(), type);
