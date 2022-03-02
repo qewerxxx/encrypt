@@ -4,7 +4,8 @@ import java.lang.annotation.*;
 
 /**
  * 对加密字段进行解密处理
- * @author amateur
+ *
+ * @author yeyu
  */
 @Documented
 @Inherited

@@ -1,4 +1,4 @@
-package com.amateur.encrypt.utils;
+package com.amateur.encrypt.component;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +10,11 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Objects;
 
 /**
- * 功能描述:  加密工具类
+ * 功能描述:  加密工具
  */
 @Slf4j
-public class AESUtils {
+@SuppressWarnings("all")
+public class AESUtils implements EncryptUtil {
 
     /**
      * 密钥动态获取秘钥(通过环境变量获取)
@@ -30,24 +31,22 @@ public class AESUtils {
 
     static {
         if (Objects.isNull(KEY)) {
-            KEY = "jirbVMbb9zjQtqhGcv6kfkqowefq";
+            KEY = "ABCXVMbb9zjABCXGcv6kDoWEAdtfPXXX";
         }
     }
 
 
     /**
      * 加密
-     *
      */
-    public static String encrypt(String content) {
+    public String encrypt(String content) {
         return encrypt(content, KEY);
     }
 
     /**
      * 解密
-     *
      */
-    public static String decrypt(String content) {
+    public String decrypt(String content) {
         return decrypt(content, KEY);
     }
 
@@ -58,7 +57,7 @@ public class AESUtils {
      * @param key     加密密码
      * @return
      */
-    public static String encrypt(String content, String key) {
+    public String encrypt(String content, String key) {
         checkKey(key);
         try {
             SecretKeySpec skey = new SecretKeySpec(key.getBytes(), ALGORITHM);
@@ -76,7 +75,7 @@ public class AESUtils {
         return null;
     }
 
-    private static void checkKey(String key) {
+    private void checkKey(String key) {
         if (Objects.isNull(key)) {
             throw new RuntimeException("加解密Key不能为空。");
         }
@@ -89,7 +88,7 @@ public class AESUtils {
      * @param key     解密密钥
      * @return 解密之后
      */
-    public static String decrypt(String content, String key) {
+    public String decrypt(String content, String key) {
         checkKey(key);
         try {
             SecretKeySpec skey = new SecretKeySpec(key.getBytes(), ALGORITHM);
@@ -105,5 +104,4 @@ public class AESUtils {
         }
         return null;
     }
-
 }
